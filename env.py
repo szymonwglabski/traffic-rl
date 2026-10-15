@@ -23,7 +23,7 @@ class TrafficEnv:
         if self.started:
             traci.close()
         binary = "sumo-gui" if self.gui else "sumo"
-        traci.start([binary, "-c", self.cfg, "--no-warnings", "true"])
+        traci.start([binary, "-c", self.cfg, "--no-warnings", "true", "--no-step-log", "true"])
         self.started = True
 
         self.lanes = sorted(set(traci.trafficlight.getControlledLanes(self.tls_id)))
@@ -35,7 +35,7 @@ class TrafficEnv:
     def step(self, action):
         if action != self.current:
             yellow = self.green_phases[self.current] + 1
-            traci.trafficlight.setPhaseDuration(self.tls_id, yellow)
+            traci.trafficlight.setPhase(self.tls_id, yellow)
             traci.trafficlight.setPhaseDuration(self.tls_id, self.yellow_time)
             for _ in range(self.yellow_time):
                 traci.simulationStep()
