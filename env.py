@@ -3,7 +3,7 @@ import traci
 
 class TrafficEnv:
     def __init__(self, cfg="sim.sumocfg", tls_id="B1", gui=False,
-                 green_phases=(0,2), yellow_time=3, step_len=5):
+                 green_phases=(0,2), yellow_time=3, step_len=5, route_file = None):
         self.cfg = cfg
         self.tls_id = tls_id
         self.gui = gui
@@ -12,6 +12,7 @@ class TrafficEnv:
         self.step_len = step_len
         self.current = 0
         self.started = False
+        self.route_file = route_file
 
     def _get_state(self):
         halting = [traci.lane.getLastStepHaltingNumber(l) for l in self.lanes]
@@ -23,7 +24,11 @@ class TrafficEnv:
         if self.started:
             traci.close()
         binary = "sumo-gui" if self.gui else "sumo"
-        traci.start([binary, "-c", self.cfg, "--no-warnings", "true", "--no-step-log", "true"])
+
+        args = [binary, "-c", self.cfg, "--no-warnings", "true", "--no-step-log", "true"]
+        if self.route_file:
+            args += ["-r", self.route_file]
+        traci.start(args)
         self.started = True
 
         self.lanes = sorted(set(traci.trafficlight.getControlledLanes(self.tls_id)))
