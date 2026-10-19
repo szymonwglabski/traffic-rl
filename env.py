@@ -1,8 +1,9 @@
 import traci
+import random
 
 
 class TrafficEnv:
-    def __init__(self, cfg="sim.sumocfg", tls_id="B1", gui=False,
+    def __init__(self, cfg="sim.sumocfg", tls_id="B1", gui=False, route_files=None,
                  green_phases=(0,2), yellow_time=3, step_len=5, route_file = None):
         self.cfg = cfg
         self.tls_id = tls_id
@@ -13,6 +14,7 @@ class TrafficEnv:
         self.current = 0
         self.started = False
         self.route_file = route_file
+        self.route_files = route_files
 
     def _get_state(self):
         halting = [traci.lane.getLastStepHaltingNumber(l) for l in self.lanes]
@@ -26,8 +28,8 @@ class TrafficEnv:
         binary = "sumo-gui" if self.gui else "sumo"
 
         args = [binary, "-c", self.cfg, "--no-warnings", "true", "--no-step-log", "true"]
-        if self.route_file:
-            args += ["-r", self.route_file]
+        route = random.choice(self.route_files) if self.route_files else self.route_file
+        args += ["-r", route]
         traci.start(args)
         self.started = True
 
