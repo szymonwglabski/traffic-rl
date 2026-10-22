@@ -12,9 +12,19 @@ def select_action(model, state, epsilon):
         q = model(s)
         return q.argmax(dim=1).item()
 
-if __name__ == "__main__":
-    from qnetwork import QNetwork
-    model = QNetwork()
-    s = [0, 0, 0, 0, 1, 0]
-    print([select_action(model, s, 0.0) for _ in range(10)])
-    print([select_action(model, s, 1.0) for _ in range(10)])
+def learn_step(model, target_net, buffer, optimizer, gamma, batch_size):
+    states, actions, rewards, next_states, dones = buffer.sample(batch_size)
+
+    q_all = model(states)
+    q_taken = q_all.gather(1, actions.unsqueeze(1)).squeeze(1)
+    
+    with torch.no_grad():
+        next_q = target_net(next_states).max(dim=1).values
+        goal = rewards + gamma * next_q * (1 - dones)
+
+    loss = nn.functional.mse_loss(q_taken, goal)
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    return loss.item()
+
