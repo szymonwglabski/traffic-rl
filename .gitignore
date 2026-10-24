@@ -2,3 +2,4 @@ __pychache__/
 *.pyc
 .venv/
 trips.trips.xml
+results.csv
