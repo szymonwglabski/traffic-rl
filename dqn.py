@@ -28,3 +28,7 @@ def learn_step(model, target_net, buffer, optimizer, gamma, batch_size):
     optimizer.step()
     return loss.item()
 
+def scale(state, max_cars=20.0):
+    cars = [c / max_cars for c in state[:4]]
+    phase = list(state[4:])
+    return cars + phase

@@ -6,7 +6,7 @@ import time
 from replay_buffer import ReplayBuffer
 from qnetwork import QNetwork
 from env import TrafficEnv
-from dqn import select_action, learn_step
+from dqn import select_action, learn_step, scale
 
 GAMMA = 0.95
 LR = 1e-3
@@ -14,7 +14,7 @@ BATCH = 64
 BUFFER_SIZE = 20000
 WARMUP = 1000
 TARGET_EVERY = 200
-EPISODES = 150
+EPISODES = 500
 EPS_START, EPS_END = 1.0, 0.05
 
 model = QNetwork()
@@ -25,11 +25,6 @@ route_files = [f"routes_{kind}_{number}.rou.xml" for kind in ("low", "mid", "hig
 env = TrafficEnv(route_files = route_files, gui=False)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 buffer = ReplayBuffer(BUFFER_SIZE)
-
-def scale(state, max_cars=20.0):
-    cars = [c / max_cars for c in state[:4]]
-    phase = list(state[4:])
-    return cars + phase
 
 counter = 0
 results = []

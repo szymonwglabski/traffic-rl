@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     def mean_over(policy, kind):
         vals = [evaluate(policy, route_file=f"routes_{kind}_{s}.rou.xml")[1]
-                for s in (1, 2, 3)]
+                for s in (4, 5, 6)]
         return sum(vals) / len(vals)
 
     policies = {
