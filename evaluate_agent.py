@@ -1,11 +1,13 @@
 import torch
+import sys
 
 from qnetwork import QNetwork
 from dqn import select_action, scale
 from evaluate import evaluate
 
 model = QNetwork()
-model.load_state_dict(torch.load("model.pt"))
+RUN = sys.argv[1] if len(sys.argv) > 1 else "run1"
+model.load_state_dict(torch.load(f"model_{RUN}.pt"))
 model.eval()
 
 agent = lambda state, t: select_action(model, scale(state), 0.0)

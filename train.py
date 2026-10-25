@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import random
+import sys
 import time
 
 from replay_buffer import ReplayBuffer
@@ -28,6 +28,7 @@ buffer = ReplayBuffer(BUFFER_SIZE)
 
 counter = 0
 results = []
+RUN = sys.argv[1] if len(sys.argv) > 1  else "run1"
 
 try:
     for episode in range(EPISODES):
@@ -57,12 +58,12 @@ try:
         print(f"epizod {episode}, kroki: {steps}, epsilon: {epsilon:.2f}, "
               f"sr. stojacych aut: {avg_halting:.2f}, czas: {time.time() - start:.1f} s")
 
-    torch.save(model.state_dict(), "model.pt")
+    torch.save(model.state_dict(), f"model_{RUN}.pt")
 
 finally:
     env.close()
-    with open("results.csv", "w") as f:
-        f.write("episode, avg_halting\n")
+    with open(f"results_{RUN}.csv", "w") as f:
+        f.write("episode,avg_halting\n")
         for i, r in enumerate(results):
             f.write(f"{i}, {r}\n")
 
