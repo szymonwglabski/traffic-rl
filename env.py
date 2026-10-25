@@ -28,8 +28,11 @@ class TrafficEnv:
         binary = "sumo-gui" if self.gui else "sumo"
 
         args = [binary, "-c", self.cfg, "--no-warnings", "true", "--no-step-log", "true"]
+        if self.gui:
+            args += ["--start", "--quit-on-end", "--delay", "100"]
         route = random.choice(self.route_files) if self.route_files else self.route_file
-        args += ["-r", route]
+        if route:
+            args += ["-r", route]
         traci.start(args)
         self.started = True
 
