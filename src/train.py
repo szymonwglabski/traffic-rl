@@ -7,6 +7,7 @@ from replay_buffer import ReplayBuffer
 from qnetwork import QNetwork
 from env import TrafficEnv
 from dqn import select_action, learn_step, scale
+from config import route, MODELS_DIR, RESULTS_DIR
 
 GAMMA = 0.95
 LR = 1e-3
@@ -20,7 +21,7 @@ EPS_START, EPS_END = 1.0, 0.05
 model = QNetwork()
 target_net = QNetwork()
 target_net.load_state_dict(model.state_dict())
-route_files = [f"routes_{kind}_{number}.rou.xml" for kind in ("low", "mid", "high")
+route_files = [route(kind, number) for kind in ("low", "mid", "high")
                                 for number in (1, 2, 3)]
 env = TrafficEnv(route_files = route_files, gui=False)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
@@ -29,6 +30,9 @@ buffer = ReplayBuffer(BUFFER_SIZE)
 counter = 0
 results = []
 RUN = sys.argv[1] if len(sys.argv) > 1  else "run1"
+
+MODELS_DIR.mkdir(exist_ok=True)
+RESULTS_DIR.mkdir(exist_ok=True)
 
 try:
     for episode in range(EPISODES):
@@ -58,11 +62,11 @@ try:
         print(f"epizod {episode}, kroki: {steps}, epsilon: {epsilon:.2f}, "
               f"sr. stojacych aut: {avg_halting:.2f}, czas: {time.time() - start:.1f} s")
 
-    torch.save(model.state_dict(), f"model_{RUN}.pt")
+    torch.save(model.state_dict(), MODELS_DIR / f"model_{RUN}.pt")
 
 finally:
     env.close()
-    with open(f"results_{RUN}.csv", "w") as f:
+    with open(RESULTS_DIR / f"results_{RUN}.csv", "w") as f:
         f.write("episode,avg_halting\n")
         for i, r in enumerate(results):
             f.write(f"{i}, {r}\n")

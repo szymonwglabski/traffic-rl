@@ -1,6 +1,7 @@
 from env import TrafficEnv
+from config import CFG, route
 
-def evaluate(policy, cfg="sim.sumocfg", gui=False, route_file=None):
+def evaluate(policy, cfg=CFG, gui=False, route_file=None):
     env = TrafficEnv(cfg=cfg, gui=gui, route_file=route_file)
     state = env.reset()
     total, steps, done = 0, 0, False
@@ -16,7 +17,7 @@ if __name__ == "__main__":
     import random
 
     def mean_over(policy, kind):
-        vals = [evaluate(policy, route_file=f"routes_{kind}_{s}.rou.xml")[1]
+        vals = [evaluate(policy, route_file=route(kind, s))[1]
                 for s in (4, 5, 6)]
         return sum(vals) / len(vals)
 

@@ -2,6 +2,8 @@ import matplotlib.pyplot as  plt
 import seaborn as sns
 import pandas as pd
 
+from config import IMG_DIR
+
 data = [
     {"Kategoria": "Low", "Próba": "baseline", "wartosc": 0.59},
     {"Kategoria": "Low", "Próba": "run1", "wartosc": 0.86},
@@ -56,5 +58,5 @@ for i, cat in enumerate(categories):
 fig.suptitle("Wykresy średniej liczby aut na jeden krok symulacji w zależności od natężenia ruchu",
            fontsize=14, fontweight="bold")
 plt.tight_layout()
-plt.savefig("charts.png", dpi=150)
+plt.savefig(IMG_DIR / "charts.png", dpi=150)
 plt.show()

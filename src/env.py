@@ -1,9 +1,11 @@
 import traci
 import random
 
+from config import CFG
+
 
 class TrafficEnv:
-    def __init__(self, cfg="sim.sumocfg", tls_id="B1", gui=False, route_files=None,
+    def __init__(self, cfg=CFG, tls_id="B1", gui=False, route_files=None,
                  green_phases=(0,2), yellow_time=3, step_len=5, route_file = None):
         self.cfg = cfg
         self.tls_id = tls_id

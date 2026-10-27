@@ -4,12 +4,13 @@ import torch
 from qnetwork import QNetwork
 from dqn import select_action, scale
 from evaluate import evaluate
+from config import route, MODELS_DIR
 
 RUN = sys.argv[1]
-ROUTE = "routes_high_4.rou.xml"
+ROUTE = route("high", 4)
 
 model = QNetwork()
-model.load_state_dict(torch.load(f"model_{RUN}.pt"))
+model.load_state_dict(torch.load(MODELS_DIR / f"model_{RUN}.pt"))
 model.eval()
 
 fixed = lambda state, t: (t//2) % 2

@@ -1,5 +1,8 @@
 __pychache__/
 *.pyc
 .venv/
+venv/
+.idea/
+.vscode/
 trips.trips.xml
-results.csv
+*.trips.xml
